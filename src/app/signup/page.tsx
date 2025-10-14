@@ -58,10 +58,10 @@ export default function SignupPage() {
 
     console.log('📝 Signup attempt started for:', email);
     console.log('🔗 Supabase client created:', !!supabase);
-    console.log('📧 Email redirect URL:', `${window.location.origin}/login`);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Sign up the user
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -69,13 +69,38 @@ export default function SignupPage() {
         },
       })
 
-      if (error) {
-        console.error('❌ Signup failed:', error.message);
-        setError(error.message)
-      } else {
-        console.log('✅ Signup successful for:', email);
-        console.log('📧 Confirmation email should be sent');
+      if (signUpError) {
+        console.error('❌ Signup failed:', signUpError.message);
+        setError(signUpError.message)
+        setLoading(false)
+        return
+      }
+
+      console.log('✅ Signup successful for:', email);
+
+      // If signup was successful and user is confirmed, sign them in immediately
+      if (signUpData.user && signUpData.session) {
+        console.log('🎉 User created and signed in automatically');
+        // Redirect to dashboard since user is already signed in
+        router.push('/dashboard')
+        return
+      }
+
+      // If user needs email confirmation, sign them in anyway
+      // This handles cases where email confirmation is disabled in Supabase settings
+      console.log('🔐 Attempting to sign in user after signup...');
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (signInError) {
+        console.error('❌ Auto sign-in failed:', signInError.message);
+        // If auto sign-in fails, show the email confirmation message
         setSuccess(true)
+      } else {
+        console.log('✅ Auto sign-in successful, redirecting to dashboard');
+        router.push('/dashboard')
       }
     } catch (err) {
       console.error('❌ Unexpected signup error:', err);
@@ -100,22 +125,22 @@ export default function SignupPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Check your email</CardTitle>
+              <CardTitle>Account created successfully!</CardTitle>
               <CardDescription>
-                We've sent you a confirmation link
+                Your account has been created and you're signed in
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center space-y-4">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  We've sent a confirmation link to <strong>{email}</strong>. 
-                  Please check your email and click the link to verify your account.
+                  Welcome to BudgetWise! Your account for <strong>{email}</strong> has been created successfully.
+                  You can now start tracking your personal finances.
                 </div>
                 <Button
-                  onClick={() => router.push("/login")}
+                  onClick={() => router.push("/dashboard")}
                   className="w-full"
                 >
-                  Go to Login
+                  Go to Dashboard
                 </Button>
               </div>
             </CardContent>
