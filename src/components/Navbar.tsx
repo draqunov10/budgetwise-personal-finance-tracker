@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { signOut } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface NavbarProps {
   userEmail?: string | null
@@ -12,6 +13,8 @@ interface NavbarProps {
 
 export default function Navbar({ userEmail }: NavbarProps) {
   const [email, setEmail] = useState<string | null>(userEmail || null)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     // Get the current user from Supabase client
@@ -20,6 +23,7 @@ export default function Navbar({ userEmail }: NavbarProps) {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setEmail(user?.email || null)
+      setIsLoading(false)
     }
 
     getUser()
@@ -27,17 +31,33 @@ export default function Navbar({ userEmail }: NavbarProps) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setEmail(session?.user?.email || null)
+      setIsLoading(false)
+      
+      // If user signed out, redirect to login
+      if (event === 'SIGNED_OUT') {
+        router.push('/login')
+      }
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [router])
 
   const handleSignOut = async () => {
-    await signOut('/login')
+    try {
+      await signOut('/login')
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
   }
 
+  // Show loading state briefly to prevent flash
+  if (isLoading) {
+    return null
+  }
+
+  // Don't show navbar if user is not authenticated
   if (!email) {
-    return null // Don't show navbar if user is not authenticated
+    return null
   }
 
   return (
