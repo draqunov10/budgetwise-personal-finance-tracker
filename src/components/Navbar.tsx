@@ -14,6 +14,7 @@ interface NavbarProps {
 export default function Navbar({ userEmail }: NavbarProps) {
   const [email, setEmail] = useState<string | null>(userEmail || null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSigningOut, setIsSigningOut] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -44,9 +45,12 @@ export default function Navbar({ userEmail }: NavbarProps) {
 
   const handleSignOut = async () => {
     try {
+      setIsSigningOut(true)
+      setEmail(null) // Immediately hide navbar
       await signOut('/login')
     } catch (error) {
       console.error('Sign out error:', error)
+      setIsSigningOut(false) // Reset state if error occurs
     }
   }
 
@@ -55,8 +59,8 @@ export default function Navbar({ userEmail }: NavbarProps) {
     return null
   }
 
-  // Don't show navbar if user is not authenticated
-  if (!email) {
+  // Don't show navbar if user is not authenticated or is signing out
+  if (!email || isSigningOut) {
     return null
   }
 
