@@ -14,7 +14,8 @@ import {
   Calendar,
   DollarSign,
   TrendingUp,
-  TrendingDown
+  TrendingDown,
+  Plus
 } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -116,6 +117,12 @@ export default async function AccountDetailPage({ params }: AccountDetailPagePro
           </div>
         </div>
         <div className="flex gap-2">
+          <Link href={`/dashboard/transactions/new?account=${account.id}`}>
+            <Button variant="outline" size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Transaction
+            </Button>
+          </Link>
           <AccountEditModal account={account} userId={user.id} />
           <AccountDeleteModal account={account} userId={user.id} />
         </div>
@@ -209,36 +216,47 @@ export default async function AccountDetailPage({ params }: AccountDetailPagePro
             <div className="text-center py-8 text-gray-500">
               <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>No transactions yet</p>
-              <p className="text-sm">Start by adding your first transaction</p>
+              <p className="text-sm mb-4">Start by adding your first transaction</p>
+              <Link href={`/dashboard/transactions/new?account=${account.id}`}>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Transaction
+                </Button>
+              </Link>
             </div>
           ) : (
             <div className="space-y-4">
               {transactions.slice(0, 10).map((transaction) => (
-                <div 
+                <Link 
                   key={transaction.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                  href={`/dashboard/transactions/${transaction.id}`}
+                  className="block"
                 >
-                  <div className="flex-1">
-                    <h4 className="font-medium">{transaction.description}</h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Calendar className="h-3 w-3 text-gray-400" />
-                      <span className="text-sm text-gray-500">
-                        {new Date(transaction.transaction_date).toLocaleDateString()}
-                      </span>
+                  <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900">{transaction.description}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Calendar className="h-3 w-3 text-gray-400" />
+                        <span className="text-sm text-gray-500">
+                          {new Date(transaction.transaction_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={`text-lg font-semibold ${
+                      transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount)}
                     </div>
                   </div>
-                  <div className={`text-lg font-semibold ${
-                    transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount)}
-                  </div>
-                </div>
+                </Link>
               ))}
               {transactions.length > 10 && (
                 <div className="text-center pt-4">
-                  <Button variant="outline">
-                    View All Transactions ({transactions.length})
-                  </Button>
+                  <Link href="/dashboard/transactions">
+                    <Button variant="outline">
+                      View All Transactions ({transactions.length})
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>
