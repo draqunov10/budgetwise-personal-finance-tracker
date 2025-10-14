@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AccountEditModal } from '@/components/AccountEditModal'
+import { AccountDeleteModal } from '@/components/AccountDeleteModal'
 import { 
   CreditCard, 
   PiggyBank, 
@@ -114,7 +115,10 @@ export default async function AccountDetailPage({ params }: AccountDetailPagePro
             </div>
           </div>
         </div>
-        <AccountEditModal account={account} userId={user.id} />
+        <div className="flex gap-2">
+          <AccountEditModal account={account} userId={user.id} />
+          <AccountDeleteModal account={account} userId={user.id} />
+        </div>
       </div>
 
       {/* Account Overview */}
