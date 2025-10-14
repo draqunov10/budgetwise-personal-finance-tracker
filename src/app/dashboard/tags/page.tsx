@@ -22,6 +22,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { clientQueries } from '@/lib/supabase/queries'
 import { Database } from '@/lib/supabase/types'
 import { getUser } from '@/app/actions/auth'
+import Image from 'next/image'
 import { 
   Plus, 
   Edit2, 
@@ -397,6 +398,28 @@ export default function TagsPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Footer */}
+      <footer className="flex gap-[24px] flex-wrap items-center justify-center py-6 mt-8">
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          Created by Led Salazar
+        </span>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-sm text-gray-600 dark:text-gray-400"
+          href="https://github.com/draqunov10/budgetwise-personal-finance-tracker"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/globe.svg"
+            alt="GitHub icon"
+            width={16}
+            height={16}
+          />
+          GitHub
+        </a>
+      </footer>
     </div>
   )
 }

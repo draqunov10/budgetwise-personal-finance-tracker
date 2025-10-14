@@ -66,81 +66,103 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            BudgetWise
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Your personal finance tracker
-          </p>
-        </div>
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              BudgetWise
+            </h1>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Your personal finance tracker
+            </p>
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Sign in to your account</CardTitle>
-            <CardDescription>
-              Enter your email and password to access your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              {error && (
-                <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-                  {error}
+          <Card>
+            <CardHeader>
+              <CardTitle>Sign in to your account</CardTitle>
+              <CardDescription>
+                Enter your email and password to access your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                    disabled={loading}
+                  />
                 </div>
-              )}
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
-                {loading ? "Signing in..." : "Sign in"}
-              </Button>
-            </form>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    disabled={loading}
+                  />
+                </div>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Don't have an account?{" "}
-                <Link
-                  href="/signup"
-                  className="font-medium text-primary hover:text-primary/80"
+                {error && (
+                  <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+                    {error}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loading}
                 >
-                  Sign up
-                </Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+                  {loading ? "Signing in..." : "Sign in"}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Don't have an account?{" "}
+                  <Link
+                    href="/signup"
+                    className="font-medium text-primary hover:text-primary/80"
+                  >
+                    Sign up
+                  </Link>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+      <footer className="flex gap-[24px] flex-wrap items-center justify-center py-6">
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          Created by Led Salazar
+        </span>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-sm text-gray-600 dark:text-gray-400"
+          href="https://github.com/draqunov10/budgetwise-personal-finance-tracker"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/globe.svg"
+            alt="GitHub icon"
+            width={16}
+            height={16}
+          />
+          GitHub
+        </a>
+      </footer>
     </div>
   )
 }

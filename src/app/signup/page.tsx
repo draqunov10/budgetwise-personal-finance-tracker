@@ -112,7 +112,69 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+        <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md w-full space-y-8">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                BudgetWise
+              </h1>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Your personal finance tracker
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Account created successfully!</CardTitle>
+                <CardDescription>
+                  Your account has been created and you're signed in
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center space-y-4">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Welcome to BudgetWise! Your account for <strong>{email}</strong> has been created successfully.
+                    You can now start tracking your personal finances.
+                  </div>
+                  <Button
+                    onClick={() => router.push("/dashboard")}
+                    className="w-full"
+                  >
+                    Go to Dashboard
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        <footer className="flex gap-[24px] flex-wrap items-center justify-center py-6">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Created by Led Salazar
+          </span>
+          <a
+            className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-sm text-gray-600 dark:text-gray-400"
+            href="https://github.com/draqunov10/budgetwise-personal-finance-tracker"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              aria-hidden
+              src="/globe.svg"
+              alt="GitHub icon"
+              width={16}
+              height={16}
+            />
+            GitHub
+          </a>
+        </footer>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -125,123 +187,105 @@ export default function SignupPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Account created successfully!</CardTitle>
+              <CardTitle>Create your account</CardTitle>
               <CardDescription>
-                Your account has been created and you're signed in
+                Enter your details to get started with BudgetWise
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center space-y-4">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Welcome to BudgetWise! Your account for <strong>{email}</strong> has been created successfully.
-                  You can now start tracking your personal finances.
+              <form onSubmit={handleSignup} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                    disabled={loading}
+                  />
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Create a password"
+                    required
+                    disabled={loading}
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Password must be at least 6 characters long
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm your password"
+                    required
+                    disabled={loading}
+                  />
+                </div>
+
+                {error && (
+                  <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+                    {error}
+                  </div>
+                )}
+
                 <Button
-                  onClick={() => router.push("/dashboard")}
+                  type="submit"
                   className="w-full"
+                  disabled={loading}
                 >
-                  Go to Dashboard
+                  {loading ? "Creating account..." : "Create account"}
                 </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    className="font-medium text-primary hover:text-primary/80"
+                  >
+                    Sign in
+                  </Link>
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
-    )
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            BudgetWise
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Your personal finance tracker
-          </p>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Create your account</CardTitle>
-            <CardDescription>
-              Enter your details to get started with BudgetWise
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a password"
-                  required
-                  disabled={loading}
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Password must be at least 6 characters long
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              {error && (
-                <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-                  {error}
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
-                {loading ? "Creating account..." : "Create account"}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Already have an account?{" "}
-                <Link
-                  href="/login"
-                  className="font-medium text-primary hover:text-primary/80"
-                >
-                  Sign in
-                </Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <footer className="flex gap-[24px] flex-wrap items-center justify-center py-6">
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          Created by Led Salazar
+        </span>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-sm text-gray-600 dark:text-gray-400"
+          href="https://github.com/draqunov10/budgetwise-personal-finance-tracker"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/globe.svg"
+            alt="GitHub icon"
+            width={16}
+            height={16}
+          />
+          GitHub
+        </a>
+      </footer>
     </div>
   )
 }
