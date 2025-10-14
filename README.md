@@ -111,7 +111,7 @@ cd budgetwise-personal-finance-tracker
 pnpm install
 
 # Set up environment variables
-cp .env.example .env.local
+cp env.example .env.local
 # Edit .env.local with your Supabase credentials
 
 # Run database migrations
