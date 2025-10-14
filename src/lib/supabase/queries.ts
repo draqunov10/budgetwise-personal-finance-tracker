@@ -291,6 +291,45 @@ export const clientQueries = {
     return true
   },
 
+  async updateTransactionTags(transactionId: string, tagIds: string[]): Promise<boolean> {
+    const supabase = createClient()
+    
+    try {
+      // First, remove all existing tags for this transaction
+      const { error: deleteError } = await supabase
+        .from('transaction_tags')
+        .delete()
+        .eq('transaction_id', transactionId)
+      
+      if (deleteError) {
+        console.error('Error removing existing tags:', deleteError)
+        return false
+      }
+
+      // Then, add the new tags
+      if (tagIds.length > 0) {
+        const tagInserts = tagIds.map(tagId => ({
+          transaction_id: transactionId,
+          tag_id: tagId
+        }))
+
+        const { error: insertError } = await supabase
+          .from('transaction_tags')
+          .insert(tagInserts)
+        
+        if (insertError) {
+          console.error('Error adding new tags:', insertError)
+          return false
+        }
+      }
+
+      return true
+    } catch (error) {
+      console.error('Error updating transaction tags:', error)
+      return false
+    }
+  },
+
   // Sample data creation
   async createSampleData(userId: string): Promise<boolean> {
     const supabase = createClient()

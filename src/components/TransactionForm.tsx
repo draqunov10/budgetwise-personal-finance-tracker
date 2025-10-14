@@ -132,22 +132,10 @@ export function TransactionForm({ transaction, userId, preselectedAccountId, onS
       }
 
       // Handle tags if any are selected
-      if (selectedTags.length > 0 && newTransaction) {
-        // Remove existing tags first (for updates)
-        if (transaction) {
-          // Get existing transaction tags and remove them
-          const existingTransaction = await clientQueries.getTransactionsWithTags(userId)
-          const currentTransaction = existingTransaction.find(t => t.id === transaction.id)
-          if (currentTransaction?.transaction_tags) {
-            for (const tt of currentTransaction.transaction_tags) {
-              await clientQueries.removeTagFromTransaction(transaction.id, (tt as any).tag_id)
-            }
-          }
-        }
-
-        // Add new tags
-        for (const tagId of selectedTags) {
-          await clientQueries.addTagToTransaction(newTransaction.id, tagId)
+      if (newTransaction) {
+        const success = await clientQueries.updateTransactionTags(newTransaction.id, selectedTags)
+        if (!success) {
+          console.error('Failed to update transaction tags')
         }
       }
 
