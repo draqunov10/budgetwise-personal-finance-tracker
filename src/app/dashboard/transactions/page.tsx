@@ -15,6 +15,18 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { Database } from '@/lib/supabase/types'
+
+type TransactionWithTags = Database['public']['Tables']['transactions']['Row'] & {
+  transaction_tags: Array<{
+    tag_id: string
+    tags: {
+      id: string
+      name: string
+      color: string
+    }
+  }>
+}
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-PH', {
@@ -39,7 +51,7 @@ export default async function TransactionsPage() {
   }
 
   // Get all transactions with tags
-  const transactions = await serverQueries.getTransactionsWithTags(user.id)
+  const transactions = await serverQueries.getTransactionsWithTags(user.id) as TransactionWithTags[]
   
   // Calculate summary stats
   const totalIncome = transactions
@@ -160,7 +172,7 @@ export default async function TransactionsPage() {
             <div className="space-y-4">
               {transactions.map((transaction) => {
                 const isIncome = transaction.amount > 0
-                const tags = transaction.transaction_tags?.map(tt => tt.tags) || []
+                const tags = transaction.transaction_tags?.map((tt: { tag_id: string; tags: { id: string; name: string; color: string } }) => tt.tags) || []
                 
                 return (
                   <Link 

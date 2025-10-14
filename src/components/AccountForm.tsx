@@ -33,7 +33,7 @@ type AccountInsert = Database['public']['Tables']['accounts']['Insert']
 const accountSchema = z.object({
   name: z.string().min(1, 'Account name is required').max(100, 'Account name is too long'),
   type: z.enum(['checking', 'savings', 'credit_card', 'cash']),
-  balance: z.coerce.number().min(-999999.99, 'Balance cannot be less than -₱999,999.99').max(999999.99, 'Balance cannot exceed ₱999,999.99'),
+  balance: z.number().min(-999999.99, 'Balance cannot be less than -₱999,999.99').max(999999.99, 'Balance cannot exceed ₱999,999.99'),
 })
 
 type AccountFormData = z.infer<typeof accountSchema>
@@ -61,7 +61,7 @@ export function AccountForm({ account, userId, onSuccess }: AccountFormProps) {
     setIsLoading(true)
     
     try {
-      const accountData: AccountInsert = {
+      const accountData: Omit<Account, 'id' | 'created_at'> = {
         user_id: userId,
         name: data.name,
         type: data.type,
@@ -172,6 +172,7 @@ export function AccountForm({ account, userId, onSuccess }: AccountFormProps) {
                       step="0.01"
                       placeholder="0.00"
                       {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                     />
                   </FormControl>
                   <FormMessage />

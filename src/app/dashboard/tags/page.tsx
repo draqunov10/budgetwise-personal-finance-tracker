@@ -76,7 +76,7 @@ function TagForm({ tag, userId, onSuccess, onCancel }: TagFormProps) {
     setIsLoading(true)
     
     try {
-      const tagData: TagInsert = {
+      const tagData: Omit<Tag, 'id' | 'created_at'> = {
         user_id: userId,
         name: data.name,
         color: data.color,
