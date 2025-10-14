@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -17,10 +17,20 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
+  useEffect(() => {
+    console.log('🔗 Login page mounted - Supabase client initialized');
+    console.log('🌐 Environment check:');
+    console.log('  - NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing');
+    console.log('  - NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing');
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
+
+    console.log('🔐 Login attempt started for:', email);
+    console.log('🔗 Supabase client created:', !!supabase);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -29,12 +39,15 @@ export default function LoginPage() {
       })
 
       if (error) {
+        console.error('❌ Login failed:', error.message);
         setError(error.message)
       } else {
+        console.log('✅ Login successful for:', email);
         router.push("/")
         router.refresh()
       }
     } catch (err) {
+      console.error('❌ Unexpected login error:', err);
       setError("An unexpected error occurred")
     } finally {
       setLoading(false)

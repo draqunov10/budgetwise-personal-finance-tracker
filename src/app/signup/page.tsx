@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -18,6 +18,13 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    console.log('🔗 Signup page mounted - Supabase client initialized');
+    console.log('🌐 Environment check:');
+    console.log('  - NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing');
+    console.log('  - NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing');
+  }, []);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,6 +45,10 @@ export default function SignupPage() {
       return
     }
 
+    console.log('📝 Signup attempt started for:', email);
+    console.log('🔗 Supabase client created:', !!supabase);
+    console.log('📧 Email redirect URL:', `${window.location.origin}/login`);
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -48,11 +59,15 @@ export default function SignupPage() {
       })
 
       if (error) {
+        console.error('❌ Signup failed:', error.message);
         setError(error.message)
       } else {
+        console.log('✅ Signup successful for:', email);
+        console.log('📧 Confirmation email should be sent');
         setSuccess(true)
       }
     } catch (err) {
+      console.error('❌ Unexpected signup error:', err);
       setError("An unexpected error occurred")
     } finally {
       setLoading(false)
