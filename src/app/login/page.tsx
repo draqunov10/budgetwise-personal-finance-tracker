@@ -22,7 +22,18 @@ export default function LoginPage() {
     console.log('🌐 Environment check:');
     console.log('  - NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing');
     console.log('  - NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing');
-  }, []);
+
+    // Check if user is already logged in and redirect to dashboard
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log('✅ User already authenticated, redirecting to dashboard');
+        router.push('/dashboard');
+      }
+    };
+
+    checkAuth();
+  }, [router, supabase.auth]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,7 +54,7 @@ export default function LoginPage() {
         setError(error.message)
       } else {
         console.log('✅ Login successful for:', email);
-        router.push("/")
+        router.push("/dashboard")
         router.refresh()
       }
     } catch (err) {

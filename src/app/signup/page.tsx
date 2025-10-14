@@ -24,7 +24,18 @@ export default function SignupPage() {
     console.log('🌐 Environment check:');
     console.log('  - NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing');
     console.log('  - NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing');
-  }, []);
+
+    // Check if user is already logged in and redirect to dashboard
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log('✅ User already authenticated, redirecting to dashboard');
+        router.push('/dashboard');
+      }
+    };
+
+    checkAuth();
+  }, [router, supabase.auth]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
